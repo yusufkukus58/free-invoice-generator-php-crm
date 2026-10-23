@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BillCraft Pro 2026 — Enterprise Invoice, Proposal, Contract & CRM SaaS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .a4-sheet {
+      width: 100%;
+      max-width: 794px;
+      min-height: 1040px;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      padding: 42px;
+      position: relative;
+    }
+    .theme-indigo .doc-accent-bg { background: linear-gradient(135deg, #4f46e5, #3730a3); color: #fff; }
+    .theme-indigo .doc-accent-text { color: #4f46e5; }
+    .theme-emerald .doc-accent-bg { background: linear-gradient(135deg, #059669, #065f46); color: #fff; }
+    .theme-emerald .doc-accent-text { color: #059669; }
+    .theme-amber .doc-accent-bg { background: linear-gradient(135deg, #b45309, #78350f); color: #fff; }
+    .theme-amber .doc-accent-text { color: #b45309; }
+    .theme-slate .doc-accent-bg { background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; }
+    .theme-slate .doc-accent-text { color: #1e293b; }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #printable-area, #printable-area * { visibility: visible !important; }
+      #printable-area {
+        position: absolute !important; left: 0 !important; top: 0 !important;
+        width: 100% !important; max-width: 100% !important;
+        box-shadow: none !important; padding: 16px !important; margin: 0 !important;
+      }
+      .no-print { display: none !important; }
+      @page { size: A4; margin: 10mm; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex overflow-x-hidden">
+
+  <!-- ==================== ENTERPRISE LOGIN OVERLAY MODAL ==================== -->
+  <div id="login-modal" class="no-print fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-black text-white text-2xl shadow-lg shadow-indigo-500/30">B</div>
+        <div>
+          <h2 class="text-xl font-black text-white">BillCraft Pro <span class="text-indigo-400">ERP</span></h2>
+          <p class="text-xs text-slate-400">Enterprise Admin & Staff Authentication</p>
+        </div>
+      </div>
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-400 mb-1">Work Email</label>
+          <input type="email" value="admin@billcraft.io" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-white font-semibold" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-400 mb-1">Password</label>
+          <input type="password" value="••••••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-white font-semibold" />
+        </div>
+        <div class="flex items-center justify-between text-slate-400 pt-1">
+          <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded" /> Remember session (JWT)</label>
+          <span class="text-indigo-400 font-semibold">PHP 8 PDO + MySQL Ready</span>
+        </div>
+        <button onclick="toggleLoginModal(false)" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
+          🔓 Sign In to Enterprise Workspace →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LEFT SIDEBAR NAVIGATION (5 SAAS PAGES) ==================== -->
+  <aside class="no-print w-60 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto">
+    <div>
+      <!-- Brand Header -->
+      <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/30">B</div>
+        <div>
+          <div class="font-extrabold text-sm text-white tracking-tight">BillCraft <span class="text-indigo-400">Pro</span></div>
+          <div class="text-[9px] font-bold uppercase tracking-wider text-emerald-400">PHP PDO + MySQL SaaS</div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="p-2.5 space-y-1">
+        <div class="px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider text-slate-500" data-i18n="navCore">Enterprise Modules</div>
+
+        <button onclick="switchPage('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800/70">
+          <span class="text-base">📈</span>
+          <span data-i18n="navDashboard">Executive Dashboard</span>
+        </button>
+
+        <button onclick="switchPage('studio')" id="nav-studio" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-lg shadow-indigo-600/25">
+          <span class="text-base">📄</span>
+          <span data-i18n="navStudio">A4 Document Studio</span>
+        </button>
+
+        <button onclick="switchPage('crm')" id="nav-crm" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800/70">
+          <span class="flex items-center gap-2.5"><span class="text-base">👥</span> <span data-i18n="navCrm">Client CRM & Ledger</span></span>
+          <span id="crm-count-badge" class="px-1.5 py-0.2 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px]">4</span>
+        </button>
+
+        <button onclick="switchPage('catalog')" id="nav-catalog" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800/70">
+          <span class="flex items-center gap-2.5"><span class="text-base">🛍️</span> <span data-i18n="navCatalog">Service & Item Catalog</span></span>
+          <span id="catalog-count-badge" class="px-1.5 py-0.2 bg-indigo-500/20 text-indigo-300 rounded-full text-[10px]">5</span>
+        </button>
+
+        <button onclick="switchPage('settings')" id="nav-settings" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800/70">
+          <span class="text-base">⚙️</span>
+          <span data-i18n="navSettings">Company & SQL API</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom System Status & Login Screen Preview -->
+    <div class="p-3 border-t border-slate-800 space-y-2">
+      <div class="p-2.5 rounded-xl bg-slate-800/70 border border-slate-700/60 text-[10px] space-y-0.5">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400 font-semibold">Engine:</span>
+          <span class="text-emerald-400 font-bold">● Hybrid SQL / Local</span>
+        </div>
+        <div class="text-slate-500 text-[9px]">REST: <code class="text-slate-300">/api/v1/documents.php</code></div>
+      </div>
+
+      <button onclick="toggleLoginModal(true)" class="w-full py-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition">
+        🔒 <span data-i18n="btnLockScreen">Preview Login Screen</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== RIGHT MAIN CONTENT AREA ==================== -->
+  <div class="flex-1 flex flex-col min-w-0">
+
+    <!-- TOP ACTION HEADER -->
+    <header class="no-print h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur px-6 flex items-center justify-between sticky top-0 z-40">
+      <div>
+        <h1 id="page-header-title" class="text-base font-extrabold text-white" data-i18n="appSubtitle">All-in-One Invoice, Proposal, Contract & Client CRM Suite</h1>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- 4-Language Switcher -->
+        <select id="lang-select" onchange="setLanguage(this.value)" class="bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-200 rounded-lg px-3 py-2">
+          <option value="en">🇬🇧 English (EN)</option>
+          <option value="tr">🇹🇷 Türkçe (TR)</option>
+          <option value="de">🇩🇪 Deutsch (DE)</option>
+          <option value="es">🇪🇸 Español (ES)</option>
+        </select>
+
+        <button onclick="saveCurrentDocument()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 transition">
+          💾 <span data-i18n="btnSaveDoc">Save to CRM</span>
+        </button>
+
+        <button onclick="switchPage('studio'); setTimeout(() => window.print(), 150);" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 transition">
+          🖨️ <span data-i18n="btnExportPdf">Export A4 PDF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN PAGES CONTAINER -->
+    <main class="p-6 flex-1">
+
+      <!-- ==================== PAGE 1: EXECUTIVE DASHBOARD & ANALYTICS ==================== -->
+      <div id="page-dashboard" class="hidden space-y-6">
+        <!-- 4 KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="text-xs font-bold uppercase text-slate-400" data-i18n="kpiTotalRev">Total Pipeline Volume</div>
+            <div id="dash-kpi-total" class="text-3xl font-black text-white mt-2">$11,890.00</div>
+            <div class="text-xs text-emerald-400 mt-1">↑ +28.4% vs last month</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="text-xs font-bold uppercase text-slate-400" data-i18n="kpiPaid">Collected Revenue (Paid)</div>
+            <div id="dash-kpi-paid" class="text-3xl font-black text-emerald-400 mt-2">$8,440.00</div>
+            <div class="text-xs text-slate-400 mt-1">Settled client invoices</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="text-xs font-bold uppercase text-slate-400" data-i18n="kpiPending">Awaiting Settlement</div>
+            <div id="dash-kpi-pending" class="text-3xl font-black text-amber-400 mt-2">$3,450.00</div>
+            <div class="text-xs text-slate-400 mt-1">Active quotes & open invoices</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+            <div class="text-xs font-bold uppercase text-slate-400" data-i18n="kpiCount">Active Client Records</div>
+            <div id="dash-kpi-count" class="text-3xl font-black text-indigo-400 mt-2">4</div>
+            <div class="text-xs text-slate-400 mt-1">Invoices, Quotes & Contracts</div>
+          </div>
+        </div>
+
+        <!-- Monthly Revenue Visual Chart & Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="text-sm font-extrabold text-white">Monthly Revenue & Invoicing Analytics (2026)</h3>
+                <p class="text-xs text-slate-400">Collected invoices vs. projected proposals across 12 months</p>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Real-Time Ledger</span>
+            </div>
+            <!-- Bar Chart -->
+            <div class="grid grid-cols-12 gap-2 items-end h-48 pt-6 px-2 border-b border-slate-800">
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-16"></div><span class="text-[10px] text-slate-400">Jan</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-20"></div><span class="text-[10px] text-slate-400">Feb</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-24"></div><span class="text-[10px] text-slate-400">Mar</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-16"></div><span class="text-[10px] text-slate-400">Apr</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-28"></div><span class="text-[10px] text-slate-400">May</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-32"></div><span class="text-[10px] text-slate-400">Jun</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-24"></div><span class="text-[10px] text-slate-400">Jul</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-36"></div><span class="text-[10px] text-slate-400">Aug</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-indigo-600/70 rounded-t-md h-32"></div><span class="text-[10px] text-slate-400">Sep</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-emerald-500 rounded-t-md h-40 shadow-lg shadow-emerald-500/30"></div><span class="text-[10px] font-bold text-emerald-400">Oct</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-slate-800 rounded-t-md h-12"></div><span class="text-[10px] text-slate-500">Nov</span></div>
+              <div class="flex flex-col items-center gap-2"><div class="w-full bg-slate-800 rounded-t-md h-12"></div><span class="text-[10px] text-slate-500">Dec</span></div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="text-sm font-extrabold text-white mb-1">Quick Launch Actions</h3>
+              <p class="text-xs text-slate-400 mb-4">Generate client-ready documents in seconds</p>
+              <div class="space-y-2.5">
+                <button onclick="switchPage('studio'); setDocType('invoice');" class="w-full p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center gap-3 text-left transition">
+                  <span class="text-xl">🧾</span>
+                  <div>
+                    <div class="text-xs font-bold text-white">Create Commercial Invoice</div>
+                    <div class="text-[11px] text-slate-400">Tax, discount & IBAN payment block</div>
+                  </div>
+                </button>
+                <button onclick="switchPage('studio'); setDocType('proposal');" class="w-full p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center gap-3 text-left transition">
+                  <span class="text-xl">💼</span>
+                  <div>
+                    <div class="text-xs font-bold text-white">Create Project Price Quote</div>
+                    <div class="text-[11px] text-slate-400">Deliverables breakdown for new leads</div>
+                  </div>
+                </button>
+                <button onclick="switchPage('studio'); setDocType('contract');" class="w-full p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center gap-3 text-left transition">
+                  <span class="text-xl">⚖️</span>
+                  <div>
+                    <div class="text-xs font-bold text-white">Draft Service Agreement</div>
+                    <div class="text-[11px] text-slate-400">Legal clauses + dual digital signatures</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PAGE 2: A4 DOCUMENT STUDIO (DEFAULT ACTIVE) ==================== -->
+      <div id="page-studio" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left Editor Controls (5 Cols) -->
+        <div class="no-print lg:col-span-5 space-y-4 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2" data-i18n="lblDocType">1. Select Document Mode</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button onclick="setDocType('invoice')" id="dtype-invoice" class="py-2.5 px-3 rounded-xl border border-indigo-500 bg-indigo-600/20 text-indigo-300 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-lg">🧾</span>
+                <span data-i18n="typeInvoice">Invoice</span>
+              </button>
+              <button onclick="setDocType('proposal')" id="dtype-proposal" class="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-lg">💼</span>
+                <span data-i18n="typeProposal">Price Quote</span>
+              </button>
+              <button onclick="setDocType('contract')" id="dtype-contract" class="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-lg">⚖️</span>
+                <span data-i18n="typeContract">Service Contract</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1" data-i18n="lblCurrency">Currency</label>
+              <select id="inp-currency" onchange="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold text-white">
+                <option value="$">$ USD (US Dollar)</option>
+                <option value="€">€ EUR (Euro)</option>
+                <option value="₺">₺ TRY (Türk Lirası)</option>
+                <option value="£">£ GBP (British Pound)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1" data-i18n="lblColorTheme">Brand Color Theme</label>
+              <select id="inp-theme" onchange="changeTheme(this.value)" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold text-white">
+                <option value="theme-indigo">Royal Indigo</option>
+                <option value="theme-emerald">Emerald Executive</option>
+                <option value="theme-amber">Luxury Gold</option>
+                <option value="theme-slate">Minimalist Onyx</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5 pt-2 border-t border-slate-800">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblDocNum">Document #</label>
+              <input type="text" id="inp-docnum" value="INV-2026-084" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblIssueDate">Issue Date</label>
+              <input type="date" id="inp-date" value="2026-10-20" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblDueDate">Due / Valid Until</label>
+              <input type="date" id="inp-duedate" value="2026-11-04" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
+            </div>
+          </div>
+
+          <!-- Sender & Client -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/60 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-indigo-400 uppercase" data-i18n="lblFrom">From (Your Brand)</span>
+                <label class="cursor-pointer text-[11px] bg-slate-700 hover:bg-slate-600 px-2 py-0.5 rounded text-slate-200">
+                  🖼️ Logo <input type="file" accept="image/*" class="hidden" onchange="uploadLogo(event)" />
+                </label>
+              </div>
+              <input type="text" id="inp-from-name" value="Apex Digital Studio LLC" oninput="renderPreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white font-semibold" />
+              <input type="text" id="inp-from-email" value="billing@apexstudio.io | +1 (555) 234-8900" oninput="renderPreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300" />
+              <input type="text" id="inp-from-addr" value="742 Evergreen Terrace, Suite 200, Austin, TX" oninput="renderPreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300" />
+            </div>
+
+            <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700/60 space-y-2">
+              <span class="text-xs font-bold text-emerald-400 uppercase block" data-i18n="lblTo">Bill To (Client)</span>
+              <input type="text" id="inp-to-name" value="Horizon E-Commerce Corp." oninput="renderPreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white font-semibold" />
+              <input type="text" id="inp-to-email" value="accounts@horizoncommerce.com" oninput="renderPreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300" />
+              <input type="text" id="inp-to-addr" value="350 Fifth Avenue, Floor 18, New York, NY" oninput="renderPreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300" />
+            </div>
+          </div>
+
+          <!-- Line Items -->
+          <div class="pt-2 border-t border-slate-800">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-400" data-i18n="lblLineItems">2. Services & Deliverables</label>
+              <div class="flex gap-1.5">
+                <button onclick="switchPage('catalog')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-1 rounded-lg font-semibold">
+                  🛍️ Catalog
+                </button>
+                <button onclick="addLineItem()" class="text-xs bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 px-2.5 py-1 rounded-lg font-semibold">
+                  + <span data-i18n="btnAddItem">Add Item</span>
+                </button>
+              </div>
+            </div>
+            <div id="line-items-container" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- Tax & Discount -->
+          <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblTaxRate">Tax / VAT (%)</label>
+              <input type="number" id="inp-tax" value="10" min="0" max="100" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblDiscount">Discount (%)</label>
+              <input type="number" id="inp-discount" value="0" min="0" max="100" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-semibold" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblPaymentInfo">Bank / IBAN / Payment Instructions</label>
+            <input type="text" id="inp-bank" value="Bank: Mercury Business USD | Routing: 021000021 | IBAN / Acc: US890049281920" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1" data-i18n="lblNotes">Terms, Scope or Thank You Note</label>
+            <textarea id="inp-notes" rows="2" oninput="renderPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200">Payment is due within 15 days. Thank you for your business and partnership!</textarea>
+          </div>
+
+          <!-- Signature Pad -->
+          <div class="pt-2 border-t border-slate-800">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-400" data-i18n="lblSignature">3. Digital Signature Pad (Draw with Mouse)</label>
+              <div class="flex gap-2">
+                <button onclick="generateSampleSignature()" class="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold">✍️ Auto-Sign</button>
+                <button onclick="clearSignature()" class="text-[11px] text-rose-400 hover:text-rose-300 font-semibold" data-i18n="btnClearSig">Clear</button>
+              </div>
+            </div>
+            <canvas id="sig-canvas" width="420" height="90" class="w-full h-[90px] bg-white rounded-xl border-2 border-indigo-500/50 cursor-crosshair touch-none shadow-inner"></canvas>
+            <div class="text-[10px] text-slate-500 mt-1 flex justify-between">
+              <span>Hold left mouse button & drag to sign smoothly</span>
+              <span class="text-emerald-400 font-semibold">● 120 FPS High-Precision</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Live A4 Preview (7 Cols) -->
+        <div class="lg:col-span-7 flex flex-col items-center">
+          <div id="printable-area" class="a4-sheet theme-indigo flex flex-col justify-between"></div>
+        </div>
+
+      </div>
+
+      <!-- ==================== PAGE 3: CLIENT CRM & LEDGER ==================== -->
+      <div id="page-crm" class="hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+            <div>
+              <h2 class="text-lg font-extrabold text-white" data-i18n="crmTitle">Client Documents & CRM Ledger</h2>
+              <p class="text-xs text-slate-400" data-i18n="crmSub">Track all invoices, price quotes, and contracts synced with LocalStorage & MySQL PDO API.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="exportCrmCsv()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700">
+                📥 Export CSV (Excel)
+              </button>
+              <button onclick="exportCrmJson()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700">
+                📦 Backup JSON
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-[11px] font-bold uppercase text-slate-400">
+                  <th class="py-3 px-3">Doc #</th>
+                  <th class="py-3 px-3">Type</th>
+                  <th class="py-3 px-3">Client</th>
+                  <th class="py-3 px-3">Date</th>
+                  <th class="py-3 px-3">Total Amount</th>
+                  <th class="py-3 px-3">Status</th>
+                  <th class="py-3 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="crm-table-body" class="divide-y divide-slate-800/70 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== PAGE 4: SERVICE & PRODUCT CATALOG ==================== -->
+      <div id="page-catalog" class="hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 class="text-lg font-extrabold text-white">Pre-Saved Service & Product Catalog</h2>
+              <p class="text-xs text-slate-400">Click "+ Insert to Document" on any catalog item to add it directly into your active Invoice or Proposal.</p>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="new-cat-name" placeholder="New Service Name..." class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white" />
+              <input type="number" id="new-cat-price" placeholder="Price ($)" class="w-28 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white" />
+              <button onclick="addCatalogItem()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">+ Add Service</button>
+            </div>
+          </div>
+          <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+      </div>
+
+      <!-- ==================== PAGE 5: COMPANY & SQL API SETTINGS ==================== -->
+      <div id="page-settings" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-white">PHP 8 PDO + MySQL Backend Configuration</h3>
+            <p class="text-xs text-slate-400">BillCraft Pro operates in Dual-Engine Mode: works out-of-the-box in browser LocalStorage or syncs automatically with your MySQL server via PDO REST endpoints.</p>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-bold text-slate-400 mb-1">REST API Endpoint URL</label>
+                <input id="inp-api-endpoint" type="text" value="api/v1/documents.php" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-emerald-400 font-mono" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-400 mb-1">1-Click Auto-Installer Wizard Path</label>
+                <div class="flex gap-2">
+                  <input type="text" value="install/index.php" readonly class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-300 font-mono" />
+                  <a href="install/index.php" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold whitespace-nowrap">Open Installer →</a>
+                </div>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-400 mb-1">MySQL Sync Verification & Status</label>
+                <div id="sql-sync-status" class="p-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[11px]">
+                  Status: Ready to verify MySQL PDO connection...
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-1">
+                <button onclick="verifyAndSyncMySQL()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition shadow-lg shadow-emerald-600/20">
+                  🔄 Test & Sync MySQL Database Now
+                </button>
+                <a href="DOCUMENTATION.html" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold transition">
+                  📖 Open Full Setup Documentation
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h3 class="text-base font-extrabold text-white">Included Enterprise Architecture</h3>
+            <ul class="space-y-2.5 text-xs text-slate-300">
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> <strong>/install/index.php</strong> — Visual 1-Click Database &amp; Admin Setup Wizard</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> <strong>/config/Database.php &amp; config.local.php</strong> — PHP 8 PDO Singleton + Env Config</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> <strong>/login.php &amp; /includes/Auth.php</strong> — Bcrypt Auth, CSRF &amp; Brute-Force Guard</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> <strong>/api/v1/documents.php &amp; auth.php</strong> — Authenticated Transactional REST API</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> <strong>/sql/billcraft_schema.sql</strong> — 7 InnoDB Tables (Users, Attempts, Settings, CRM, Docs)</li>
+              <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> <strong>4-Language Support</strong> — Instant English, Turkish, German, Spanish Switcher</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    const I18N = {
+      en: {
+        appSubtitle: "All-in-One Invoice, Proposal, Contract & Client CRM Suite",
+        navDashboard: "Executive Dashboard",
+        navStudio: "A4 Document Studio",
+        navCrm: "Client CRM & Ledger",
+        navCatalog: "Service & Item Catalog",
+        navSettings: "Company & SQL API",
+        btnSaveDoc: "Save to CRM",
+        btnExportPdf: "Print / Save PDF",
+        lblDocType: "1. Select Document Mode",
+        typeInvoice: "Invoice",
+        typeProposal: "Price Quote",
+        typeContract: "Service Contract",
+        lblCurrency: "Currency",
+        lblColorTheme: "Brand Theme",
+        lblDocNum: "Document #",
+        lblIssueDate: "Issue Date",
+        lblDueDate: "Due / Valid Until",
+        lblFrom: "From (Your Brand)",
+        lblTo: "Bill To (Client)",
+        lblLineItems: "2. Services & Deliverables",
+        btnAddItem: "Add Item",
+        lblTaxRate: "Tax / VAT (%)",
+        lblDiscount: "Discount (%)",
+        lblPaymentInfo: "Bank / IBAN / Payment Details",
+        lblNotes: "Terms, Scope or Thank You Note",
+        lblSignature: "3. Digital Signature (Draw Below)",
+        btnClearSig: "Clear Signature",
+        docTitleInvoice: "INVOICE",
+        docTitleProposal: "PROJECT PROPOSAL & QUOTE",
+        docTitleContract: "SERVICE AGREEMENT CONTRACT",
+        docPreparedFor: "PREPARED FOR",
+        docIssueDate: "ISSUE DATE",
+        docDueDate: "VALID / DUE DATE",
+        colDesc: "DESCRIPTION / DELIVERABLE",
+        colQty: "QTY",
+        colPrice: "UNIT PRICE",
+        colTotal: "LINE TOTAL",
+        lblSubtotal: "Subtotal",
+        lblDiscountRow: "Discount",
+        lblTaxRow: "Tax / VAT",
+        lblGrandTotal: "TOTAL DUE",
+        lblPaymentMethod: "PAYMENT INSTRUCTIONS & BANK DETAILS",
+        lblNotesHeader: "TERMS & NOTES",
+        lblAuthSig: "AUTHORIZED SIGNATURE",
+        lblClientSig: "CLIENT ACCEPTANCE SIGNATURE",
+        contractClause1: "1. SCOPE OF WORK: The Service Provider agrees to deliver the items and services listed in the schedule below in accordance with professional industry standards.",
+        contractClause2: "2. COMPENSATION & PAYMENT TERMS: The Client agrees to pay the Total Amount specified below according to the agreed payment schedule.",
+        contractClause3: "3. INTELLECTUAL PROPERTY & CONFIDENTIALITY: Upon full payment, all custom deliverables created specifically for the Client shall transfer to the Client."
+      },
+      tr: {
+        appSubtitle: "Kurumsal Fatura, Fiyat Teklifi, Sözleşme ve Müşteri CRM Sistemi (PHP PDO + MySQL)",
+        navDashboard: "Yönetici Özeti & Grafik",
+        navStudio: "A4 Belge Stüdyosu",
+        navCrm: "Müşteri CRM & Cari",
+        navCatalog: "Hizmet & Ürün Kataloğu",
+        navSettings: "Şirket & SQL Ayarları",
+        btnSaveDoc: "CRM'e Kaydet",
+        btnExportPdf: "A4 PDF İndir / Yazdır",
+        lblDocType: "1. Belge Türünü Seçin",
+        typeInvoice: "Fatura / Proforma",
+        typeProposal: "Fiyat Teklifi",
+        typeContract: "Hizmet Sözleşmesi",
+        lblCurrency: "Para Birimi",
+        lblColorTheme: "Kurumsal Tema",
+        lblDocNum: "Belge No",
+        lblIssueDate: "Düzenleme Tarihi",
+        lblDueDate: "Son Geçerlilik / Vade",
+        lblFrom: "Gönderen (Markanız)",
+        lblTo: "Alıcı (Müşteri Bilgileri)",
+        lblLineItems: "2. Hizmet ve Ürün Kalemleri",
+        btnAddItem: "Kalem Ekle",
+        lblTaxRate: "KDV Oranı (%)",
+        lblDiscount: "İskonto / İndirim (%)",
+        lblPaymentInfo: "Banka / IBAN / Ödeme Bilgileri",
+        lblNotes: "Notlar, Şartlar veya Teşekkür Mesajı",
+        lblSignature: "3. Dijital İmza (Fare İle Çizin)",
+        btnClearSig: "İmzayı Temizle",
+        docTitleInvoice: "PROFORMA FATURA",
+        docTitleProposal: "KURUMSAL FİYAT TEKLİFİ",
+        docTitleContract: "HİZMET VE İŞ SÖZLEŞMESİ",
+        docPreparedFor: "MÜŞTERİ / KURUM",
+        docIssueDate: "TARİH",
+        docDueDate: "GEÇERLİLİK / VADE",
+        colDesc: "HİZMET / ÜRÜN AÇIKLAMASI",
+        colQty: "MİKTAR",
+        colPrice: "BİRİM FİYAT",
+        colTotal: "TOPLAM",
+        lblSubtotal: "Ara Toplam",
+        lblDiscountRow: "İskonto",
+        lblTaxRow: "KDV Tutarı",
+        lblGrandTotal: "GENEL TOPLAM",
+        lblPaymentMethod: "ÖDEME VE BANKA (IBAN) BİLGİLERİ",
+        lblNotesHeader: "ŞARTLAR VE NOTLAR",
+        lblAuthSig: "YETKİLİ İMZA / KAŞE",
+        lblClientSig: "MÜŞTERİ ONAY İMZASI",
+        contractClause1: "1. SÖZLEŞMENİN KONUSU: İşbu sözleşme, aşağıda detayları belirtilen hizmet ve ürünlerin Hizmet Veren tarafından Müşteri'ye sunulması şartlarını düzenler.",
+        contractClause2: "2. ÜCRET VE ÖDEME KOŞULLARI: Müşteri, aşağıdaki tabloda yer alan Genel Toplam tutarını belirtilen banka hesabına kararlaştırılan vadede ödemeyi kabul eder.",
+        contractClause3: "3. GİZLİLİK VE TELİF HAKLARI: Ödemenin tamamlanmasıyla birlikte üretilen nihai çıktılar Müşteri'ye devredilir."
+      },
+      de: {
+        appSubtitle: "Enterprise Rechnungs-, Angebots-, Vertrags- & CRM-Suite",
+        navDashboard: "Finanz-Dashboard",
+        navStudio: "A4 Dokument-Studio",
+        navCrm: "Kunden-CRM",
+        navCatalog: "Leistungskatalog",
+        navSettings: "System & SQL API",
+        btnSaveDoc: "Speichern",
+        btnExportPdf: "A4 PDF Exportieren",
+        lblDocType: "1. Dokumenttyp wählen",
+        typeInvoice: "Rechnung",
+        typeProposal: "Angebot",
+        typeContract: "Dienstvertrag",
+        lblCurrency: "Währung",
+        lblColorTheme: "Farbschema",
+        lblDocNum: "Dokument-Nr.",
+        lblIssueDate: "Datum",
+        lblDueDate: "Fällig bis",
+        lblFrom: "Absender (Ihre Firma)",
+        lblTo: "Empfänger (Kunde)",
+        lblLineItems: "2. Positionen & Leistungen",
+        btnAddItem: "Position +",
+        lblTaxRate: "MwSt. (%)",
+        lblDiscount: "Rabatt (%)",
+        lblPaymentInfo: "Bankverbindung / IBAN",
+        lblNotes: "Bedingungen & Hinweise",
+        lblSignature: "3. Digitale Unterschrift",
+        btnClearSig: "Löschen",
+        docTitleInvoice: "RECHNUNG",
+        docTitleProposal: "PROJEKTANGEBOT",
+        docTitleContract: "DIENSTLEISTUNGSVERTRAG",
+        docPreparedFor: "AUFTRAGGEBER",
+        docIssueDate: "DATUM",
+        docDueDate: "FÄLLIGKEIT",
+        colDesc: "BESCHREIBUNG / LEISTUNG",
+        colQty: "MENGE",
+        colPrice: "EINZELPREIS",
+        colTotal: "GESAMT",
+        lblSubtotal: "Zwischensumme",
+        lblDiscountRow: "Rabatt",
+        lblTaxRow: "MwSt.",
+        lblGrandTotal: "GESAMTBETRAG",
+        lblPaymentMethod: "ZAHLUNGSINFORMATIONEN & IBAN",
+        lblNotesHeader: "HINWEISE & BEDINGUNGEN",
+        lblAuthSig: "UNTERSCHRIFT AUFTRAGNEHMER",
+        lblClientSig: "UNTERSCHRIFT KUNDE",
+        contractClause1: "1. LEISTUNGSUMFANG: Der Auftragnehmer verpflichtet sich, die unten aufgeführten Leistungen fachgerecht auszuführen.",
+        contractClause2: "2. VERGÜTUNG: Der Auftraggeber zahlt den ausgewiesenen Gesamtbetrag gemäß den Zahlungsbedingungen.",
+        contractClause3: "3. NUTZUNGSRECHTE: Nach vollständiger Bezahlung gehen die vereinbarten Nutzungsrechte auf den Kunden über."
+      },
+      es: {
+        appSubtitle: "Suite Empresarial de Facturas, Presupuestos, Contratos y CRM",
+        navDashboard: "Panel Ejecutivo",
+        navStudio: "Estudio A4",
+        navCrm: "CRM de Clientes",
+        navCatalog: "Catálogo de Servicios",
+        navSettings: "Ajustes & SQL API",
+        btnSaveDoc: "Guardar CRM",
+        btnExportPdf: "Exportar PDF A4",
+        lblDocType: "1. Modo de Documento",
+        typeInvoice: "Factura",
+        typeProposal: "Presupuesto",
+        typeContract: "Contrato",
+        lblCurrency: "Moneda",
+        lblColorTheme: "Tema de Color",
+        lblDocNum: "N° Documento",
+        lblIssueDate: "Fecha Emisión",
+        lblDueDate: "Vencimiento",
+        lblFrom: "De (Su Empresa)",
+        lblTo: "Para (Cliente)",
+        lblLineItems: "2. Servicios y Conceptos",
+        btnAddItem: "Añadir +",
+        lblTaxRate: "Impuesto / IVA (%)",
+        lblDiscount: "Descuento (%)",
+        lblPaymentInfo: "Banco / IBAN / Pago",
+        lblNotes: "Notas y Condiciones",
+        lblSignature: "3. Firma Digital",
+        btnClearSig: "Borrar Firma",
+        docTitleInvoice: "FACTURA COMERCIAL",
+        docTitleProposal: "PRESUPUESTO Y PROPUESTA",
+        docTitleContract: "CONTRATO DE SERVICIOS",
+        docPreparedFor: "CLIENTE",
+        docIssueDate: "FECHA",
+        docDueDate: "VÁLIDO HASTA",
+        colDesc: "DESCRIPCIÓN DEL SERVICIO",
+        colQty: "CANT.",
+        colPrice: "PRECIO UNIT.",
+        colTotal: "TOTAL",
+        lblSubtotal: "Subtotal",
+        lblDiscountRow: "Descuento",
+        lblTaxRow: "IVA / Impuesto",
+        lblGrandTotal: "TOTAL A PAGAR",
+        lblPaymentMethod: "INSTRUCCIONES DE PAGO Y BANCO",
+        lblNotesHeader: "TÉRMINOS Y CONDICIONES",
+        lblAuthSig: "FIRMA AUTORIZADA",
+        lblClientSig: "FIRMA DEL CLIENTE",
+        contractClause1: "1. ALCANCE DEL TRABAJO: El Proveedor se compromete a entregar los servicios detallados en la tabla inferior con calidad profesional.",
+        contractClause2: "2. HONORARIOS Y PAGO: El Cliente abonará el Total indicado según las instrucciones bancarias detalladas.",
+        contractClause3: "3. PROPIEDAD INTELECTUAL: Tras el pago total, los derechos de los entregables pasan al Cliente."
+      }
+    };
+
+    let currentLang = 'en';
+    let currentDocType = 'invoice';
+    let customLogoData = '';
+
+    let lineItems = [
+      { desc: "Full-Stack E-Commerce Marketplace Integration (API & Dashboard)", qty: 1, price: 1450 },
+      { desc: "UI/UX Responsive Design System & Speed Optimization", qty: 1, price: 650 },
+      { desc: "Cloud Server Deployment, SSL Security & 30-Day Priority Support", qty: 1, price: 300 }
+    ];
+
+    let catalogItems = [
+      { name: "Full-Stack E-Commerce Marketplace Integration (API & Dashboard)", category: "Development", price: 1450 },
+      { name: "UI/UX Responsive Design System & Conversion Optimization", category: "Design", price: 650 },
+      { name: "Custom PHP 8 PDO ERP Module & MySQL Architecture", category: "Backend", price: 950 },
+      { name: "Mobile App UI Kit & Interactive Prototype", category: "Mobile", price: 550 },
+      { name: "Monthly Technical SEO, Security & Cloud Maintenance Retainer", category: "Retainer", price: 350 }
+    ];
+
+    let crmRecords = [
+      { id: "INV-2026-080", type: "invoice", client: "Vertex Cloud Systems Inc.", date: "2026-10-03", amount: 4200, currency: "$", status: "Paid" },
+      { id: "INV-2026-081", type: "invoice", client: "Jaeger Labs GmbH", date: "2026-10-08", amount: 3200, currency: "$", status: "Paid" },
+      { id: "QUO-2026-082", type: "proposal", client: "NovaRetail Group UK", date: "2026-10-14", amount: 1850, currency: "$", status: "Pending" },
+      { id: "CTR-2026-083", type: "contract", client: "Horizon E-Commerce Corp.", date: "2026-10-19", amount: 2640, currency: "$", status: "Pending" }
+    ];
+
+    try {
+      const saved = localStorage.getItem('billcraft_crm_2026');
+      if (saved) crmRecords = JSON.parse(saved);
+    } catch (e) {}
+
+    function toggleLoginModal(show) {
+      const m = document.getElementById('login-modal');
+      m.classList.toggle('hidden', !show);
+      m.classList.toggle('flex', show);
+    }
+
+    function switchPage(pageId) {
+      ['dashboard', 'studio', 'crm', 'catalog', 'settings'].forEach(p => {
+        document.getElementById('page-' + p).classList.toggle('hidden', p !== pageId);
+        const nav = document.getElementById('nav-' + p);
+        if (nav) {
+          nav.className = p === pageId
+            ? "w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-lg shadow-indigo-600/25"
+            : "w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800/70";
+        }
+      });
+      if (pageId === 'crm' || pageId === 'dashboard') renderCrmTable();
+      if (pageId === 'catalog') renderCatalog();
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      const dict = I18N[lang] || I18N.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+      renderPreview();
+    }
+
+    function setDocType(type) {
+      currentDocType = type;
+      ['invoice', 'proposal', 'contract'].forEach(t => {
+        const btn = document.getElementById('dtype-' + t);
+        btn.className = t === type
+          ? "py-2.5 px-3 rounded-xl border border-indigo-500 bg-indigo-600/20 text-indigo-300 font-bold text-xs flex flex-col items-center gap-1 transition"
+          : "py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 font-bold text-xs flex flex-col items-center gap-1 transition";
+      });
+      const prefix = type === 'invoice' ? 'INV' : (type === 'proposal' ? 'QUO' : 'CTR');
+      const numInput = document.getElementById('inp-docnum');
+      numInput.value = numInput.value.replace(/^[A-Z]+/, prefix);
+      renderPreview();
+    }
+
+    function changeTheme(themeClass) {
+      document.getElementById('printable-area').className = `a4-sheet ${themeClass} flex flex-col justify-between`;
+    }
+
+    function uploadLogo(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => { customLogoData = e.target.result; renderPreview(); };
+      reader.readAsDataURL(file);
+    }
+
+    function renderLineItemInputs() {
+      const container = document.getElementById('line-items-container');
+      container.innerHTML = lineItems.map((item, idx) => `
+        <div class="grid grid-cols-12 gap-1.5 items-center bg-slate-800/80 p-2 rounded-lg border border-slate-700/70">
+          <input type="text" value="${item.desc.replace(/"/g, '&quot;')}" oninput="updateLineItem(${idx}, 'desc', this.value)" class="col-span-7 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white" />
+          <input type="number" value="${item.qty}" min="1" oninput="updateLineItem(${idx}, 'qty', this.value)" class="col-span-2 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white text-center" />
+          <input type="number" value="${item.price}" min="0" oninput="updateLineItem(${idx}, 'price', this.value)" class="col-span-2 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white" />
+          <button onclick="removeLineItem(${idx})" class="col-span-1 text-rose-400 hover:text-rose-300 font-bold text-center">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function updateLineItem(idx, key, val) {
+      lineItems[idx][key] = (key === 'qty' || key === 'price') ? (parseFloat(val) || 0) : val;
+      renderPreview();
+    }
+
+    function addLineItem() {
+      lineItems.push({ desc: "Custom Consulting / Software Module", qty: 1, price: 250 });
+      renderLineItemInputs();
+      renderPreview();
+    }
+
+    function removeLineItem(idx) {
+      if (lineItems.length <= 1) return;
+      lineItems.splice(idx, 1);
+      renderLineItemInputs();
+      renderPreview();
+    }
+
+    function calculateTotals() {
+      const subtotal = lineItems.reduce((acc, it) => acc + (it.qty * it.price), 0);
+      const discPct = parseFloat(document.getElementById('inp-discount').value) || 0;
+      const taxPct = parseFloat(document.getElementById('inp-tax').value) || 0;
+      const discountAmt = subtotal * (discPct / 100);
+      const afterDisc = subtotal - discountAmt;
+      const taxAmt = afterDisc * (taxPct / 100);
+      const grandTotal = afterDisc + taxAmt;
+      return { subtotal, discPct, discountAmt, taxPct, taxAmt, grandTotal };
+    }
+
+    // Signature Pad (Silky-Smooth High-Precision Engine)
+    const sigCanvas = document.getElementById('sig-canvas');
+    const sigCtx = sigCanvas.getContext('2d');
+    let isDrawing = false;
+
+    function initSignatureSample() {
+      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      sigCtx.strokeStyle = '#1e1b4b';
+      sigCtx.lineWidth = 2.4;
+      sigCtx.lineCap = 'round';
+      sigCtx.lineJoin = 'round';
+      sigCtx.beginPath();
+      sigCtx.moveTo(50, 60);
+      sigCtx.bezierCurveTo(90, 15, 120, 75, 160, 35);
+      sigCtx.bezierCurveTo(185, 15, 215, 68, 255, 40);
+      sigCtx.lineTo(330, 46);
+      sigCtx.stroke();
+    }
+
+    function generateSampleSignature() {
+      initSignatureSample();
+      updateSignaturePreview();
+    }
+
+    function getCanvasCoords(e) {
+      const rect = sigCanvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * (sigCanvas.width / rect.width),
+        y: (clientY - rect.top) * (sigCanvas.height / rect.height)
+      };
+    }
+
+    function startDraw(e) {
+      isDrawing = true;
+      const p = getCanvasCoords(e);
+      sigCtx.strokeStyle = '#1e1b4b';
+      sigCtx.lineWidth = 2.5;
+      sigCtx.lineCap = 'round';
+      sigCtx.lineJoin = 'round';
+      sigCtx.beginPath();
+      sigCtx.moveTo(p.x, p.y);
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const p = getCanvasCoords(e);
+      sigCtx.lineTo(p.x, p.y);
+      sigCtx.stroke();
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function stopDraw() {
+      if (!isDrawing) return;
+      isDrawing = false;
+      updateSignaturePreview();
+    }
+
+    function updateSignaturePreview() {
+      const img = document.getElementById('doc-sig-img');
+      if (img) {
+        img.src = sigCanvas.toDataURL();
+      }
+    }
+
+    sigCanvas.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDraw);
+
+    // Touchscreen / Mobile / Trackpad support
+    sigCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    window.addEventListener('touchmove', draw, { passive: false });
+    window.addEventListener('touchend', stopDraw);
+
+    function clearSignature() {
+      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      updateSignaturePreview();
+    }
+
+    function renderPreview() {
+      const dict = I18N[currentLang] || I18N.en;
+      const cur = document.getElementById('inp-currency').value;
+      const docNum = document.getElementById('inp-docnum').value;
+      const date = document.getElementById('inp-date').value;
+      const dueDate = document.getElementById('inp-duedate').value;
+      const fromName = document.getElementById('inp-from-name').value;
+      const fromEmail = document.getElementById('inp-from-email').value;
+      const fromAddr = document.getElementById('inp-from-addr').value;
+      const toName = document.getElementById('inp-to-name').value;
+      const toEmail = document.getElementById('inp-to-email').value;
+      const toAddr = document.getElementById('inp-to-addr').value;
+      const bank = document.getElementById('inp-bank').value;
+      const notes = document.getElementById('inp-notes').value;
+
+      const { subtotal, discPct, discountAmt, taxPct, taxAmt, grandTotal } = calculateTotals();
+      const fmt = n => cur + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const docTitle = currentDocType === 'invoice'
+        ? dict.docTitleInvoice
+        : (currentDocType === 'proposal' ? dict.docTitleProposal : dict.docTitleContract);
+
+      const sigDataUrl = sigCanvas.toDataURL();
+
+      const contractSectionHtml = currentDocType === 'contract' ? `
+        <div class="mb-5 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2 leading-relaxed">
+          <p class="font-semibold text-slate-900">${dict.contractClause1}</p>
+          <p class="font-semibold text-slate-900">${dict.contractClause2}</p>
+          <p class="font-semibold text-slate-900">${dict.contractClause3}</p>
+        </div>
+      ` : '';
+
+      const logoHtml = customLogoData
+        ? `<img src="${customLogoData}" class="h-14 w-auto object-contain rounded" />`
+        : `<div class="doc-accent-bg w-12 h-12 rounded-xl flex items-center justify-center font-black text-2xl shadow">${fromName.charAt(0) || 'B'}</div>`;
+
+      const rowsHtml = lineItems.map((it, i) => `
+        <tr class="border-b border-slate-200 text-xs">
+          <td class="py-3 px-3 font-semibold text-slate-800">${i + 1}. ${it.desc}</td>
+          <td class="py-3 px-3 text-center text-slate-600">${it.qty}</td>
+          <td class="py-3 px-3 text-right text-slate-600">${fmt(it.price)}</td>
+          <td class="py-3 px-3 text-right font-bold text-slate-900">${fmt(it.qty * it.price)}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('printable-area').innerHTML = `
+        <div>
+          <div class="flex items-start justify-between pb-6 border-b-2 border-slate-200">
+            <div class="flex items-center gap-3.5">
+              ${logoHtml}
+              <div>
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">${fromName}</h2>
+                <p class="text-xs text-slate-500 mt-0.5">${fromEmail}</p>
+                <p class="text-xs text-slate-500">${fromAddr}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="inline-block doc-accent-bg px-4 py-1.5 rounded-lg font-black text-sm tracking-wider uppercase shadow-sm">${docTitle}</div>
+              <div class="mt-2 text-xs font-bold text-slate-700"># ${docNum}</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 py-5 border-b border-slate-200 text-xs">
+            <div class="col-span-2">
+              <div class="text-[10px] font-extrabold uppercase tracking-wider doc-accent-text mb-1">${dict.docPreparedFor}</div>
+              <div class="font-bold text-sm text-slate-900">${toName}</div>
+              <div class="text-slate-600 mt-0.5">${toEmail}</div>
+              <div class="text-slate-500">${toAddr}</div>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 flex flex-col justify-center space-y-1.5">
+              <div class="flex justify-between"><span class="font-semibold text-slate-500">${dict.docIssueDate}:</span><span class="font-bold text-slate-800">${date}</span></div>
+              <div class="flex justify-between"><span class="font-semibold text-slate-500">${dict.docDueDate}:</span><span class="font-bold text-slate-800">${dueDate}</span></div>
+            </div>
+          </div>
+
+          <div class="mt-4">${contractSectionHtml}</div>
+
+          <div class="mt-4">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="doc-accent-bg text-[11px] font-extrabold uppercase tracking-wider">
+                  <th class="py-2.5 px-3 rounded-tl-lg">${dict.colDesc}</th>
+                  <th class="py-2.5 px-3 text-center">${dict.colQty}</th>
+                  <th class="py-2.5 px-3 text-right">${dict.colPrice}</th>
+                  <th class="py-2.5 px-3 text-right rounded-tr-lg">${dict.colTotal}</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+
+          <div class="grid grid-cols-12 gap-6 mt-6 items-start">
+            <div class="col-span-7 space-y-3">
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider doc-accent-text mb-1">${dict.lblPaymentMethod}</div>
+                <div class="text-xs font-semibold text-slate-700 break-words">${bank}</div>
+              </div>
+              <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-1">${dict.lblNotesHeader}</div>
+                <div class="text-xs text-slate-600 leading-relaxed">${notes}</div>
+              </div>
+            </div>
+
+            <div class="col-span-5 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
+              <div class="flex justify-between text-slate-600"><span>${dict.lblSubtotal}:</span><span class="font-bold text-slate-800">${fmt(subtotal)}</span></div>
+              ${discPct > 0 ? `<div class="flex justify-between text-emerald-700"><span>${dict.lblDiscountRow} (${discPct}%):</span><span class="font-bold">-${fmt(discountAmt)}</span></div>` : ''}
+              <div class="flex justify-between text-slate-600"><span>${dict.lblTaxRow} (${taxPct}%):</span><span class="font-bold text-slate-800">${fmt(taxAmt)}</span></div>
+              <div class="border-t-2 border-slate-300 pt-2.5 mt-2 flex justify-between items-center">
+                <span class="font-black text-sm doc-accent-text">${dict.lblGrandTotal}:</span>
+                <span class="font-black text-xl text-slate-900">${fmt(grandTotal)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-8 mt-8 border-t border-slate-200 grid grid-cols-2 gap-12 text-xs">
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-2">${dict.lblAuthSig}</div>
+            <img src="${sigDataUrl}" class="h-14 object-contain" />
+            <div class="border-t border-slate-400 pt-1 mt-1 font-bold text-slate-800">${fromName}</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-2">${dict.lblClientSig}</div>
+            <div class="h-14"></div>
+            <div class="border-t border-slate-400 pt-1 mt-1 font-bold text-slate-800">${toName}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById('catalog-grid');
+      grid.innerHTML = catalogItems.map((c, i) => `
+        <div class="bg-slate-800/70 border border-slate-700/80 rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">${c.category}</span>
+            <div class="font-bold text-sm text-white mt-2">${c.name}</div>
+          </div>
+          <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-700/60">
+            <span class="text-lg font-black text-emerald-400">$${c.price.toFixed(2)}</span>
+            <button onclick="insertCatalogToInvoice(${i})" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">
+              + Insert to Document
+            </button>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('catalog-count-badge').textContent = catalogItems.length;
+    }
+
+    function addCatalogItem() {
+      const name = document.getElementById('new-cat-name').value.trim();
+      const price = parseFloat(document.getElementById('new-cat-price').value) || 150;
+      if (!name) return;
+      catalogItems.unshift({ name, category: "Custom", price });
+      document.getElementById('new-cat-name').value = '';
+      document.getElementById('new-cat-price').value = '';
+      renderCatalog();
+    }
+
+    function insertCatalogToInvoice(idx) {
+      const item = catalogItems[idx];
+      lineItems.push({ desc: item.name, qty: 1, price: item.price });
+      renderLineItemInputs();
+      renderPreview();
+      switchPage('studio');
+    }
+
+    function getApiUrl() {
+      const el = document.getElementById('inp-api-endpoint');
+      return el && el.value ? el.value.trim() : 'api/v1/documents.php';
+    }
+
+    async function verifyAndSyncMySQL(silent = false) {
+      const statusBox = document.getElementById('sql-sync-status');
+      const apiUrl = getApiUrl();
+      if (statusBox && !silent) {
+        statusBox.className = "p-3 rounded-lg bg-slate-800 border border-indigo-500/40 text-indigo-300 font-mono text-[11px]";
+        statusBox.textContent = "Connecting to " + apiUrl + " ...";
+      }
+      try {
+        const res = await fetch(apiUrl, { method: 'GET', headers: { 'Accept': 'application/json' } });
+        const json = await res.json();
+        if (res.ok && json.status === 'success' && Array.isArray(json.data)) {
+          if (json.data.length > 0) {
+            crmRecords = json.data.map(row => ({
+              db_id: row.id,
+              id: row.doc_number,
+              type: row.doc_type || 'invoice',
+              client: row.client_name_snapshot || 'Client',
+              date: row.issue_date || '2026-10-20',
+              amount: parseFloat(row.grand_total) || 0,
+              currency: row.currency || '$',
+              status: row.status || 'Pending'
+            }));
+            try { localStorage.setItem('billcraft_crm_2026', JSON.stringify(crmRecords)); } catch (e) {}
+            document.getElementById('crm-count-badge').textContent = crmRecords.length;
+            renderCrmTable();
+          }
+          if (statusBox) {
+            statusBox.className = "p-3 rounded-lg bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-mono text-[11px]";
+            statusBox.textContent = "✅ MySQL Connected! Synced " + json.data.length + " records from bc_documents table.";
+          }
+        } else {
+          throw new Error(json.message || 'Database not initialized yet');
+        }
+      } catch (err) {
+        if (statusBox && !silent) {
+          statusBox.className = "p-3 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-[11px]";
+          statusBox.textContent = "ℹ️ LocalStorage Mode Active (" + err.message + "). Run /install/index.php on PHP server to enable MySQL sync.";
+        }
+      }
+    }
+
+    async function saveCurrentDocument() {
+      const { subtotal, discPct, taxPct, grandTotal } = calculateTotals();
+      const docNum = document.getElementById('inp-docnum').value;
+      const clientName = document.getElementById('inp-to-name').value;
+      const clientEmail = document.getElementById('inp-to-email').value;
+      const clientAddr = document.getElementById('inp-to-addr').value;
+      const issueDate = document.getElementById('inp-date').value;
+      const dueDate = document.getElementById('inp-duedate').value;
+      const currency = document.getElementById('inp-currency').value;
+      const notes = document.getElementById('inp-notes').value;
+      const sigBase64 = sigCanvas.toDataURL();
+
+      const rec = {
+        id: docNum,
+        type: currentDocType,
+        client: clientName,
+        date: issueDate,
+        amount: grandTotal,
+        currency: currency,
+        status: "Pending"
+      };
+      crmRecords.unshift(rec);
+      try { localStorage.setItem('billcraft_crm_2026', JSON.stringify(crmRecords)); } catch (e) {}
+
+      // Dispatch POST request to PHP 8 PDO + MySQL REST API
+      try {
+        const res = await fetch(getApiUrl(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            doc_number: docNum,
+            doc_type: currentDocType,
+            client_name: clientName,
+            client_email: clientEmail,
+            client_address: clientAddr,
+            issue_date: issueDate,
+            due_date: dueDate,
+            currency: currency,
+            subtotal: subtotal,
+            discount_pct: discPct,
+            tax_pct: taxPct,
+            grand_total: grandTotal,
+            status: 'Pending',
+            notes: notes,
+            signature_base64: sigBase64,
+            items: lineItems
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.document_id) {
+          rec.db_id = data.document_id;
+          try { localStorage.setItem('billcraft_crm_2026', JSON.stringify(crmRecords)); } catch (e) {}
+        }
+      } catch (e) {}
+
+      document.getElementById('crm-count-badge').textContent = crmRecords.length;
+      switchPage('crm');
+    }
+
+    async function toggleStatus(idx) {
+      const r = crmRecords[idx];
+      r.status = r.status === 'Paid' ? 'Pending' : 'Paid';
+      try { localStorage.setItem('billcraft_crm_2026', JSON.stringify(crmRecords)); } catch (e) {}
+      renderCrmTable();
+
+      if (r.db_id) {
+        try {
+          await fetch(`${getApiUrl()}?id=${encodeURIComponent(r.db_id)}`, { method: 'PATCH' });
+        } catch (e) {}
+      }
+    }
+
+    async function deleteRecord(idx) {
+      const r = crmRecords[idx];
+      crmRecords.splice(idx, 1);
+      try { localStorage.setItem('billcraft_crm_2026', JSON.stringify(crmRecords)); } catch (e) {}
+      document.getElementById('crm-count-badge').textContent = crmRecords.length;
+      renderCrmTable();
+
+      if (r && r.db_id) {
+        try {
+          await fetch(`${getApiUrl()}?id=${encodeURIComponent(r.db_id)}`, { method: 'DELETE' });
+        } catch (e) {}
+      }
+    }
+
+    function renderCrmTable() {
+      const tbody = document.getElementById('crm-table-body');
+      let total = 0, paid = 0, pending = 0;
+
+      tbody.innerHTML = crmRecords.map((r, i) => {
+        total += r.amount;
+        if (r.status === 'Paid') paid += r.amount;
+        else pending += r.amount;
+        const badgeColor = r.status === 'Paid'
+          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+          : 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="py-3.5 px-3 font-bold text-white">${r.id}</td>
+            <td class="py-3.5 px-3 uppercase text-xs font-bold text-indigo-400">${r.type}</td>
+            <td class="py-3.5 px-3 font-semibold text-slate-200">${r.client}</td>
+            <td class="py-3.5 px-3 text-slate-400 text-xs">${r.date}</td>
+            <td class="py-3.5 px-3 font-extrabold text-white">${r.currency}${r.amount.toLocaleString('en-US', {minimumFractionDigits:2})}</td>
+            <td class="py-3.5 px-3">
+              <button onclick="toggleStatus(${i})" class="px-2.5 py-1 rounded-full text-xs font-bold border ${badgeColor}">${r.status} ↻</button>
+            </td>
+            <td class="py-3.5 px-3 text-right">
+              <button onclick="deleteRecord(${i})" class="text-rose-400 hover:text-rose-300 text-xs font-bold px-2 py-1">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const fmt = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2 });
+      document.getElementById('dash-kpi-total').textContent = fmt(total);
+      document.getElementById('dash-kpi-paid').textContent = fmt(paid);
+      document.getElementById('dash-kpi-pending').textContent = fmt(pending);
+      document.getElementById('dash-kpi-count').textContent = crmRecords.length;
+    }
+
+    function exportCrmCsv() {
+      const headers = ["Document_ID,Type,Client,Date,Currency,Amount,Status"];
+      const rows = crmRecords.map(r => `"${r.id}","${r.type}","${r.client}","${r.date}","${r.currency}",${r.amount},"${r.status}"`);
+      const blob = new Blob([headers.concat(rows).join('\n')], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'BillCraft_CRM_Export.csv';
+      a.click();
+    }
+
+    function exportCrmJson() {
+      const blob = new Blob([JSON.stringify(crmRecords, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'BillCraft_CRM_Backup.json';
+      a.click();
+    }
+
+    initSignatureSample();
+    renderLineItemInputs();
+    renderPreview();
+    renderCrmTable();
+    verifyAndSyncMySQL(true);
+  </script>
+</body>
+</html>
